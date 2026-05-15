@@ -2,11 +2,15 @@
 
 import { Logo } from "@/components/Logo";
 import { navItems } from "@/data/site";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { gsap, registerGsap } from "@/lib/gsap";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ButtonOrixo } from "./ui/ButtonOrixo";
+
+/** Desktop nav from this width up (laptop+). Below = hamburger menu. */
+const DESKTOP_NAV_MQ = "(min-width: 1024px)";
 
 function isActive(pathname: string, href: string) {
   return href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -14,6 +18,7 @@ function isActive(pathname: string, href: string) {
 
 export function Navbar() {
   const pathname = usePathname();
+  const isDesktop = useMediaQuery(DESKTOP_NAV_MQ);
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const linksRef = useRef<HTMLUListElement>(null);
@@ -30,24 +35,19 @@ export function Navbar() {
   }, [pathname]);
 
   useEffect(() => {
-    const mq = window.matchMedia("(min-width: 1024px)");
-    const onChange = () => {
-      if (mq.matches) setOpen(false);
-    };
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
-  }, []);
+    if (isDesktop) setOpen(false);
+  }, [isDesktop]);
 
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
+    document.body.style.overflow = open && !isDesktop ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
-  }, [open]);
+  }, [open, isDesktop]);
 
   useEffect(() => {
     registerGsap();
-    if (!open || !linksRef.current) return;
+    if (!open || isDesktop || !linksRef.current) return;
 
     const links = linksRef.current.querySelectorAll("li");
     gsap.fromTo(
@@ -61,7 +61,7 @@ export function Navbar() {
         ease: "power3.out",
       }
     );
-  }, [open]);
+  }, [open, isDesktop]);
 
   return (
     <>
@@ -77,30 +77,29 @@ export function Navbar() {
             <Logo size={40} priority />
           </Link>
 
-          <nav
-            className="nav-modern__desktop hidden flex-1 justify-center lg:flex"
-            aria-label="Primary"
-          >
-            <ul className="nav-modern__pills">
-              {navItems.map((item) => {
-                const active = isActive(pathname, item.href);
-                return (
-                  <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    data-cursor="hover"
-                    className={`nav-modern__link ${active ? "nav-modern__link--active" : ""}`}
-                  >
-                    {active ? (
-                      <span className="nav-modern__link-glow" aria-hidden />
-                    ) : null}
-                    <span className="nav-modern__link-text">{item.label}</span>
-                  </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </nav>
+          {isDesktop ? (
+            <nav className="nav-modern__desktop" aria-label="Primary">
+              <ul className="nav-modern__pills">
+                {navItems.map((item) => {
+                  const active = isActive(pathname, item.href);
+                  return (
+                    <li key={item.href}>
+                      <Link
+                        href={item.href}
+                        data-cursor="hover"
+                        className={`nav-modern__link ${active ? "nav-modern__link--active" : ""}`}
+                      >
+                        {active ? (
+                          <span className="nav-modern__link-glow" aria-hidden />
+                        ) : null}
+                        <span className="nav-modern__link-text">{item.label}</span>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </nav>
+          ) : null}
 
           <div className="nav-modern__end">
             <div className="nav-modern__actions">
@@ -109,78 +108,84 @@ export function Navbar() {
               </ButtonOrixo>
             </div>
 
-            <button
-              type="button"
-              className={`nav-modern__toggle lg:hidden ${open ? "nav-modern__toggle--open" : ""}`}
-              aria-expanded={open}
-              aria-label={open ? "Close menu" : "Open menu"}
-              onClick={() => setOpen(!open)}
-            >
-              <span />
-              <span />
-              <span />
-            </button>
+            {!isDesktop ? (
+              <button
+                type="button"
+                className={`nav-modern__toggle ${open ? "nav-modern__toggle--open" : ""}`}
+                aria-expanded={open}
+                aria-label={open ? "Close menu" : "Open menu"}
+                onClick={() => setOpen(!open)}
+              >
+                <span />
+                <span />
+                <span />
+              </button>
+            ) : null}
           </div>
         </div>
       </header>
 
-      <div
-        className={`offcanvas nav-modern__drawer lg:hidden ${open ? "offcanvas--open" : ""}`}
-        aria-hidden={!open}
-      >
-        <div className="nav-modern__drawer-head">
-          <Logo size={36} />
-          <button
-            type="button"
-            className="nav-modern__drawer-close"
-            aria-label="Close menu"
-            onClick={() => setOpen(false)}
+      {!isDesktop ? (
+        <>
+          <div
+            className={`offcanvas nav-modern__drawer ${open ? "offcanvas--open" : ""}`}
+            aria-hidden={!open}
           >
-            ×
-          </button>
-        </div>
+            <div className="nav-modern__drawer-head">
+              <Logo size={36} />
+              <button
+                type="button"
+                className="nav-modern__drawer-close"
+                aria-label="Close menu"
+                onClick={() => setOpen(false)}
+              >
+                ×
+              </button>
+            </div>
 
-        <ul ref={linksRef} className="nav-modern__drawer-links">
-          {navItems.map((item, i) => {
-            const active = isActive(pathname, item.href);
-            return (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                  className={`nav-modern__drawer-link ${active ? "nav-modern__drawer-link--active" : ""}`}
-                >
-                  <span className="font-mono text-xs text-[var(--accent)]">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span>{item.label}</span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+            <ul ref={linksRef} className="nav-modern__drawer-links">
+              {navItems.map((item, i) => {
+                const active = isActive(pathname, item.href);
+                return (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      onClick={() => setOpen(false)}
+                      className={`nav-modern__drawer-link ${active ? "nav-modern__drawer-link--active" : ""}`}
+                    >
+                      <span className="font-mono text-xs text-[var(--accent)]">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <span>{item.label}</span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
 
-        <div className="nav-modern__drawer-foot">
-          <p className="text-xs text-[var(--text-dim)]">
-            Strategy · Creative · Automation
-          </p>
-          <ButtonOrixo
-            href="/contact"
-            variant="primary"
-            className="w-full justify-center"
-          >
-            Book a call
-          </ButtonOrixo>
-        </div>
-      </div>
+            <div className="nav-modern__drawer-foot">
+              <p className="text-xs text-[var(--text-dim)]">
+                Strategy · Creative · Automation
+              </p>
+              <ButtonOrixo
+                href="/contact"
+                variant="primary"
+                className="w-full justify-center"
+              >
+                Book a call
+              </ButtonOrixo>
+            </div>
+          </div>
 
-      {open ? (
-        <button
-          type="button"
-          className="nav-modern__backdrop lg:hidden"
-          aria-label="Close menu overlay"
-          onClick={() => setOpen(false)}
-        />
+          {open ? (
+            <button
+              type="button"
+              className="nav-modern__backdrop"
+              aria-label="Close menu overlay"
+              onClick={() => setOpen(false)}
+            />
+          ) : null}
+        </>
       ) : null}
     </>
   );
