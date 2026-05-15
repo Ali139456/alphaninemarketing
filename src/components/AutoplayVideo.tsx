@@ -34,7 +34,7 @@ export function AutoplayVideo({
       loop
       playsInline
       autoPlay
-      preload="auto"
+      preload="metadata"
       onError={() => setError(true)}
       aria-hidden
     />
