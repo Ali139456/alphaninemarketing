@@ -33,25 +33,29 @@ export function GsapReveal({
     const targets =
       stagger > 0 ? (Array.from(el.children) as HTMLElement[]) : [el];
 
+    const travel = Math.min(y, 36);
+
     const ctx = gsap.context(() => {
       gsap.fromTo(
         targets,
         {
-          y,
+          y: travel,
           opacity: 0,
           scale: scale ?? 1,
+          force3D: true,
         },
         {
           y: 0,
           opacity: 1,
           scale: 1,
-          duration: 0.9,
+          duration: 1.05,
           delay,
-          stagger: stagger || undefined,
-          ease: "power3.out",
+          stagger: stagger ? stagger * 0.85 : undefined,
+          ease: "expo.out",
+          force3D: true,
           scrollTrigger: {
             trigger: el,
-            start: "top 90%",
+            start: "top 88%",
             once: true,
           },
         }

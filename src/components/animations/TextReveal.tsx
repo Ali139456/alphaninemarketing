@@ -37,13 +37,14 @@ export function TextReveal({
     const ctx = gsap.context(() => {
       gsap.fromTo(
         inners,
-        { yPercent: 110 },
+        { yPercent: 105, force3D: true },
         {
           yPercent: 0,
-          duration: 1.1,
-          stagger: split === "words" ? 0.04 : 0.12,
+          duration: 1.2,
+          stagger: split === "words" ? 0.035 : 0.1,
           delay,
-          ease: "power4.out",
+          ease: "expo.out",
+          force3D: true,
         }
       );
     }, el);

@@ -27,11 +27,17 @@ export function Magnetic({
       const rect = el.getBoundingClientRect();
       const x = (e.clientX - rect.left - rect.width / 2) * strength;
       const y = (e.clientY - rect.top - rect.height / 2) * strength;
-      gsap.to(el, { x, y, duration: 0.45, ease: "power2.out" });
+      gsap.to(el, { x, y, duration: 0.55, ease: "expo.out", overwrite: "auto" });
     };
 
     const onLeave = () => {
-      gsap.to(el, { x: 0, y: 0, duration: 0.6, ease: "elastic.out(1, 0.5)" });
+      gsap.to(el, {
+        x: 0,
+        y: 0,
+        duration: 0.75,
+        ease: "elastic.out(1, 0.45)",
+        overwrite: "auto",
+      });
     };
 
     el.addEventListener("mousemove", onMove);

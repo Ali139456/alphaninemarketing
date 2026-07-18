@@ -15,8 +15,13 @@ export function AnimationProvider({ children }: { children: React.ReactNode }) {
     registerGsap();
 
     const lenisInstance = new Lenis({
-      duration: 1.15,
+      duration: 1.35,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      syncTouch: false,
+      touchMultiplier: 1.4,
+      wheelMultiplier: 0.9,
+      lerp: 0.085,
     });
 
     setLenis(lenisInstance);
@@ -28,7 +33,7 @@ export function AnimationProvider({ children }: { children: React.ReactNode }) {
     };
 
     gsap.ticker.add(raf);
-    gsap.ticker.lagSmoothing(0);
+    gsap.ticker.lagSmoothing(500, 33);
 
     const onLoad = () => ScrollTrigger.refresh();
     window.addEventListener("load", onLoad);

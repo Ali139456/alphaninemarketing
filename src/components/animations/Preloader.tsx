@@ -43,14 +43,14 @@ export function Preloader() {
       },
     });
 
-    tl.to(bar, { width: "100%", duration: 1.1, ease: "power2.inOut" })
+    tl.to(bar, { width: "100%", duration: 1.2, ease: "expo.inOut" })
       .to(overlay, {
         yPercent: -100,
-        duration: 0.9,
-        ease: "power4.inOut",
-        delay: 0.15,
+        duration: 1,
+        ease: "expo.inOut",
+        delay: 0.12,
       })
-      .to(overlay, { opacity: 0, duration: 0.2 }, "-=0.15");
+      .to(overlay, { opacity: 0, duration: 0.25 }, "-=0.2");
 
     return () => {
       clearTimeout(failsafe);

@@ -38,8 +38,8 @@ export function CustomCursor() {
     };
 
     const tick = () => {
-      ringX += (mouseX - ringX) * 0.14;
-      ringY += (mouseY - ringY) * 0.14;
+      ringX += (mouseX - ringX) * 0.1;
+      ringY += (mouseY - ringY) * 0.1;
       setRing(ringX);
       setRingY(ringY);
     };
@@ -53,25 +53,27 @@ export function CustomCursor() {
 
       gsap.to(ring, {
         scale: mode === "view" ? 2.8 : mode === "drag" ? 1.6 : 1.5,
-        duration: 0.35,
-        ease: "power3.out",
+        duration: 0.45,
+        ease: "expo.out",
       });
-      gsap.to(dot, { scale: 0, duration: 0.25 });
+      gsap.to(dot, { scale: 0, duration: 0.3, ease: "power2.out" });
 
       if (label && text) {
         label.textContent = text;
-        gsap.to(label, { opacity: 1, scale: 1, duration: 0.3 });
+        gsap.to(label, { opacity: 1, scale: 1, duration: 0.35, ease: "expo.out" });
       }
     };
 
     const onLeave = () => {
-      gsap.to(ring, { scale: 1, duration: 0.35, ease: "power3.out" });
-      gsap.to(dot, { scale: 1, duration: 0.25 });
-      if (label) gsap.to(label, { opacity: 0, scale: 0.8, duration: 0.25 });
+      gsap.to(ring, { scale: 1, duration: 0.45, ease: "expo.out" });
+      gsap.to(dot, { scale: 1, duration: 0.3, ease: "power2.out" });
+      if (label) {
+        gsap.to(label, { opacity: 0, scale: 0.8, duration: 0.3, ease: "power2.out" });
+      }
     };
 
-    const onDown = () => gsap.to(ring, { scale: 0.9, duration: 0.15 });
-    const onUp = () => gsap.to(ring, { scale: 1, duration: 0.2 });
+    const onDown = () => gsap.to(ring, { scale: 0.9, duration: 0.2, ease: "power2.out" });
+    const onUp = () => gsap.to(ring, { scale: 1, duration: 0.3, ease: "expo.out" });
 
     window.addEventListener("mousemove", onMove);
     window.addEventListener("mousedown", onDown);

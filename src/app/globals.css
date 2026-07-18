@@ -296,7 +296,11 @@ body {
   font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: 0.02em;
-  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), background 0.3s, color 0.3s;
+  transition:
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    background 0.35s ease,
+    color 0.35s ease,
+    border-color 0.35s ease;
 }
 
 .btn-orixo:hover {
@@ -481,13 +485,14 @@ body {
 }
 
 .portfolio-card__img {
-  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Off-canvas */
 .offcanvas {
   transform: translateX(100%);
-  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
 }
 
 .offcanvas--open {
@@ -521,10 +526,10 @@ body {
     0 0 0 1px rgba(163, 230, 53, 0.06) inset,
     0 20px 50px -24px rgba(0, 0, 0, 0.85);
   transition:
-    background 0.4s ease,
-    border-color 0.4s ease,
-    box-shadow 0.4s ease,
-    transform 0.4s ease;
+    background 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .nav-modern__bar--scrolled {
@@ -568,7 +573,7 @@ body {
   font-weight: 500;
   letter-spacing: 0.02em;
   color: var(--text-muted);
-  transition: color 0.25s ease;
+  transition: color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .nav-modern__link:hover {
@@ -586,6 +591,18 @@ body {
   border-radius: inherit;
   background: var(--accent-soft);
   border: 1px solid rgba(163, 230, 53, 0.35);
+  animation: nav-glow-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes nav-glow-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .nav-modern__link--active {
@@ -766,7 +783,10 @@ body {
 
 /* Magnetic card */
 .hover-lift {
-  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.5s;
+  transition:
+    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
 }
 
 .hover-lift:hover {
@@ -777,7 +797,7 @@ body {
 @keyframes fade-up {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(24px);
   }
   to {
     opacity: 1;
@@ -786,7 +806,7 @@ body {
 }
 
 .animate-fade-up {
-  animation: fade-up 0.9s ease forwards;
+  animation: fade-up 1.05s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* Custom cursor */
@@ -1270,7 +1290,7 @@ html.has-custom-cursor * {
 
 .team-carousel__track {
   display: flex;
-  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform;
 }
 
@@ -1333,6 +1353,17 @@ html.has-custom-cursor * {
   }
   .hover-lift:hover {
     transform: none;
+  }
+  .animate-fade-up {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  .offcanvas {
+    transition: none;
+  }
+  .team-carousel__track {
+    transition: none;
   }
   html.has-custom-cursor,
   html.has-custom-cursor * {
